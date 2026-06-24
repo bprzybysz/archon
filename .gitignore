@@ -1,0 +1,9 @@
+# Archon secrets — never commit
+.archon/.env
+.archon/workspaces/
+.archon/*.db
+
+# CE / Serena runtime
+.serena/
+__pycache__/
+.DS_Store

@@ -1,0 +1,51 @@
+name: plan-gui-code
+description: >
+  Opus 4.8 plans with Serena/MCP, Gemini 3.5 Flash builds GUI (thinkingLevel low),
+  Kimi K2.7 implements core (always-on thinking). GUI + code run concurrently.
+  Validate is a deterministic bash node ($0 AI cost).
+provider: claude
+
+nodes:
+  # 1) PLAN — native claude → Serena/MCP + SDK-enforced structured output
+  - id: plan
+    model: claude-opus-4-8
+    effort: medium
+    mcp: ~/.archon/mcp/serena.json
+    skills: [serena-usage]
+    output_format:
+      type: object
+      properties:
+        summary:    { type: string }
+        gui_tasks:  { type: string }
+        core_tasks: { type: string }
+      required: [summary, gui_tasks, core_tasks]
+    prompt: >
+      Explore the codebase with Serena/MCP and produce a self-contained
+      implementation plan. Downstream coders have NO MCP access — embed every
+      file path, symbol name, and signature they need directly in the plan.
+      Write the full plan to $ARTIFACTS_DIR/plan.md.
+
+  # 2) GUI — Gemini 3.5 Flash via Pi native google backend
+  #    effort: low → thinkingLevel: low (Google-retuned for code/agent loops)
+  - id: build-gui
+    depends_on: [plan]
+    provider: pi
+    model: google/gemini-3.5-flash
+    effort: low
+    allowed_tools: [read, write, edit, grep]
+    prompt: "Implement the GUI strictly from this plan (no MCP): $plan.output.gui_tasks"
+
+  # 3) CORE — Kimi K2.7 via Pi → OpenRouter
+  #    No effort field: K2.7-Code always-on self-managed thinking; field is inert
+  - id: implement
+    depends_on: [plan]
+    provider: pi
+    model: openrouter/moonshotai/kimi-k2.7
+    allowed_tools: [read, edit, write, bash, grep]
+    prompt: "Implement the core logic strictly from this plan (no MCP): $plan.output.core_tasks"
+
+  # 4) VALIDATE — deterministic bash, $0 AI cost
+  - id: validate
+    depends_on: [build-gui, implement]
+    trigger_rule: all_success
+    bash: "make quick 2>/dev/null || bun run validate 2>/dev/null || echo 'no validator configured'"

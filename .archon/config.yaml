@@ -1,0 +1,14 @@
+# Archon workspace config — bprzybysz personal hub
+# Role-model aliases: @plan / @gui / @code
+# Effort rationale: medium for plan = CE-scaffolded (Serena warm); upgrade to high on cold repos
+# Kimi K2.7: no effort field — always-on self-managed thinking, field is silently inert
+
+aliases:
+  '@plan': { provider: claude, model: claude-opus-4-8,                  effort: medium }
+  '@gui':  { provider: pi,     model: google/gemini-3.5-flash,          effort: low   }
+  '@code': { provider: pi,     model: openrouter/moonshotai/kimi-k2.7               }
+
+tiers:
+  small:  { provider: pi,     model: google/gemini-3.5-flash,           effort: low   }
+  medium: { provider: claude, model: claude-opus-4-8,                   effort: medium }
+  large:  { provider: claude, model: claude-opus-4-8,                   effort: high  }
