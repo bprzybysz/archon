@@ -10,5 +10,5 @@ aliases:
 
 tiers:
   small:  { provider: pi,     model: google/gemini-3.5-flash,           effort: low   }
-  medium: { provider: claude, model: claude-opus-4-8,                   effort: medium }
-  large:  { provider: claude, model: claude-opus-4-8,                   effort: high  }
+  medium: { provider: claude, model: claude-sonnet-4-6,                 effort: high  }
+  large:  { provider: claude, model: claude-opus-4-8,                   effort: medium  }

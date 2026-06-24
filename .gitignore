@@ -4,6 +4,5 @@
 .archon/*.db
 
 # CE / Serena runtime
-.serena/
 __pycache__/
 .DS_Store
